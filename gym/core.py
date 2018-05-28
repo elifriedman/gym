@@ -250,6 +250,16 @@ class Wrapper(Env):
     def class_name(cls):
         return cls.__name__
 
+    def __getattr__(self, name):
+        return getattr(self.env, name)
+
+    def __setattr__(self, name, value):
+        try:
+            getattr(self.env, name)
+            self.env.__setattr__(name, value)
+        except AttributeError:
+            super().__setattr__(name, value)
+
     def _warn_double_wrap(self):
         env = self.env
         while True:
